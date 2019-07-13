@@ -10,13 +10,13 @@ JSON-RPC wrapper around the [systemstat](https://crates.io/crates/systemstat) cr
 | `block_device_statistics` | |
 | `boot_time` | |
 | `cpu_load` | |
-| `cpu_temp` | |
-| `on_ac_power` | |
+| `cpu_temp` | | x _Implemented but fails_
+| `on_ac_power` | | x _Implemented but gives incorrect result_
 | `load_average` | |
-| `memory` | |
+| `memory` | | x _Implemented as println!_
 | `mounts` | |
 | `socket_stats` | |
-| `uptime` | |
+| `uptime` | Returns system uptime in seconds | x _Implemented_
 
 ### Environment
 
