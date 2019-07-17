@@ -22,6 +22,13 @@ pub struct CpuStatPercentages {
     nice: f32,
 }
 
+#[derive(Debug, Serialize)]
+pub struct LoadAverage {
+    one: f32,
+    five: f32,
+    fifteen: f32,
+}
+
 pub fn cpu_stats() -> Result<String, StatError> {
     let cpu_stats = cpu::proc::read().context(ReadCpuStat)?;
     let s = cpu_stats.stat;
@@ -48,4 +55,16 @@ pub fn cpu_stats_percent() -> Result<String, StatError> {
     let json_stats = serde_json::to_string(&stats).context(SerdeSerialize)?;
 
     Ok(json_stats)
+}
+
+pub fn load_average() -> Result<String, StatError> {
+    let l = load::read().context(ReadLoadAvg)?;
+    let load_avg = LoadAverage {
+        one: l.one,
+        five: l.five,
+        fifteen: l.fifteen,
+    };
+    let json_load_avg = serde_json::to_string(&load_avg).context(SerdeSerialize)?;
+
+    Ok(json_load_avg)
 }

@@ -4,7 +4,7 @@ JSON-RPC wrapper around the [systemstat](https://crates.io/crates/systemstat) cr
 
 ### JSON-API
 
-| Method | Description |
+| Method | Description | Returns |
 | --- | --- |
 | `battery_life` | |
 | `block_device_statistics` | |
@@ -12,7 +12,9 @@ JSON-RPC wrapper around the [systemstat](https://crates.io/crates/systemstat) cr
 | `cpu_load` | |
 | `cpu_temp` | | x _Implemented but fails_
 | `on_ac_power` | | x _Implemented but gives incorrect result_
-| `load_average` | |
+| `cpu_stats` | | x _Implemented_
+| `cpu_stats_percent` | | x _Implemented_
+| `load_average` | | x _Implemented_
 | `memory` | | x _Implemented as println!_
 | `mounts` | |
 | `socket_stats` | |

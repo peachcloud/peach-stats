@@ -49,6 +49,15 @@ pub fn run() -> Result<(), BoxError> {
         Ok(Value::String("success".to_string()))
     });
 
+    // current load average of the system (one, five, fifteen)
+    io.add_method("load_average", move |_| {
+        info!("Fetching system load average statistics.");
+        match stats::load_average() {
+            Ok(avgs) => Ok(Value::String(avgs)),
+            Err(_) => Err(Error::from(StatError::GetLoadAvg)),
+        }
+    });
+
     let http_server = env::var("PEACH_OLED_STATS").unwrap_or_else(|_| "127.0.0.1:5113".to_string());
 
     info!("Starting JSON-RPC server on {}.", http_server);
