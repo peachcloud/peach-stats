@@ -2,6 +2,7 @@ use std::result::Result;
 
 use probes::{cpu, disk_usage, load, memory};
 use snafu::ResultExt;
+use systemstat::{Platform, System};
 
 use crate::error::*;
 use crate::structs::{CpuStat, CpuStatPercentages, DiskUsage, LoadAverage, MemStat};
@@ -75,4 +76,12 @@ pub fn mem_stats() -> Result<String, StatError> {
     let json_mem = serde_json::to_string(&mem).context(SerdeSerialize)?;
 
     Ok(json_mem)
+}
+
+pub fn uptime() -> Result<String, StatError> {
+    let sys = System::new();
+    let uptime = sys.uptime().context(ReadUptime)?;
+    let json_uptime = serde_json::to_string(&uptime).context(SerdeSerialize)?;
+
+    Ok(json_uptime)
 }

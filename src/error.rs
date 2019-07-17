@@ -1,4 +1,4 @@
-use std::error;
+use std::{error, io};
 
 use jsonrpc_core::{types::error::Error, ErrorCode};
 use probes::ProbeError;
@@ -21,6 +21,9 @@ pub enum StatError {
 
     #[snafu(display("Failed to retrieve memory statistics: {}", source))]
     ReadMemStat { source: ProbeError },
+
+    #[snafu(display("Failed to retrieve system uptime: {}", source))]
+    ReadUptime { source: io::Error },
 
     #[snafu(display("JSON serialization failed: {}", source))]
     SerdeSerialize { source: SerdeError },
@@ -47,6 +50,11 @@ impl From<StatError> for Error {
             StatError::ReadMemStat { source } => Error {
                 code: ErrorCode::ServerError(-32001),
                 message: format!("Failed to retrieve memory statistics: {}", source),
+                data: None,
+            },
+            StatError::ReadUptime { source } => Error {
+                code: ErrorCode::ServerError(-32001),
+                message: format!("Failed to retrieve system uptime: {}", source),
                 data: None,
             },
             StatError::SerdeSerialize { source } => Error {

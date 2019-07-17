@@ -55,6 +55,13 @@ pub fn run() -> Result<(), BoxError> {
         Ok(Value::String(mem))
     });
 
+    io.add_method("uptime", move |_| {
+        info!("Fetching system uptime.");
+        let uptime = stats::uptime()?;
+
+        Ok(Value::String(uptime))
+    });
+
     let http_server = env::var("PEACH_OLED_STATS").unwrap_or_else(|_| "127.0.0.1:5113".to_string());
 
     info!("Starting JSON-RPC server on {}.", http_server);
