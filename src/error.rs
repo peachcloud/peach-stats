@@ -10,20 +10,17 @@ pub type BoxError = Box<dyn error::Error>;
 #[derive(Debug, Snafu)]
 #[snafu(visibility(pub(crate)))]
 pub enum StatError {
-    #[snafu(display("Failed to retrieve CPU statistics"))]
-    GetCpuStat,
-
-    #[snafu(display("Failed to retrieve measurement of CPU statistics: {}", source))]
+    #[snafu(display("Failed to retrieve CPU statistics: {}", source))]
     ReadCpuStat { source: ProbeError },
 
-    #[snafu(display("Failed to retrieve load average statistics"))]
-    GetLoadAvg,
+    #[snafu(display("Failed to retrieve disk usage statistics: {}", source))]
+    ReadDiskUsage { source: ProbeError },
 
-    #[snafu(display(
-        "Failed to retrieve measurements of load average statistics: {}",
-        source
-    ))]
+    #[snafu(display("Failed to retrieve load average statistics: {}", source))]
     ReadLoadAvg { source: ProbeError },
+
+    #[snafu(display("Failed to retrieve memory statistics: {}", source))]
+    ReadMemStat { source: ProbeError },
 
     #[snafu(display("JSON serialization failed: {}", source))]
     SerdeSerialize { source: SerdeError },
@@ -32,30 +29,24 @@ pub enum StatError {
 impl From<StatError> for Error {
     fn from(err: StatError) -> Self {
         match &err {
-            StatError::GetCpuStat => Error {
-                code: ErrorCode::ServerError(-32000),
-                message: "Failed to retrieve CPU statistics".to_string(),
-                data: None,
-            },
             StatError::ReadCpuStat { source } => Error {
                 code: ErrorCode::ServerError(-32001),
-                message: format!(
-                    "Failed to retrieve measurement of CPU statistics: {}",
-                    source
-                ),
+                message: format!("Failed to retrieve CPU statistics: {}", source),
                 data: None,
             },
-            StatError::GetLoadAvg => Error {
-                code: ErrorCode::ServerError(-32000),
-                message: "Failed to retrieve load average statistics".to_string(),
+            StatError::ReadDiskUsage { source } => Error {
+                code: ErrorCode::ServerError(-32001),
+                message: format!("Failed to retrieve disk usage statistics: {}", source),
                 data: None,
             },
             StatError::ReadLoadAvg { source } => Error {
                 code: ErrorCode::ServerError(-32001),
-                message: format!(
-                    "Failed to retrieve measurements of load average statistics: {}",
-                    source
-                ),
+                message: format!("Failed to retrieve load average statistics: {}", source),
+                data: None,
+            },
+            StatError::ReadMemStat { source } => Error {
+                code: ErrorCode::ServerError(-32001),
+                message: format!("Failed to retrieve memory statistics: {}", source),
                 data: None,
             },
             StatError::SerdeSerialize { source } => Error {

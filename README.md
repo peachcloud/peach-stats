@@ -1,6 +1,6 @@
 # peach-stats
 
-JSON-RPC wrapper around the [systemstat](https://crates.io/crates/systemstat) crate.
+JSON-RPC wrapper around the [probes](https://crates.io/crates/probes) and [systemstat](https://crates.io/crates/systemstat) crates.
 
 ### JSON-API
 
@@ -14,8 +14,9 @@ JSON-RPC wrapper around the [systemstat](https://crates.io/crates/systemstat) cr
 | `on_ac_power` | | x _Implemented but gives incorrect result_
 | `cpu_stats` | | x _Implemented_
 | `cpu_stats_percent` | | x _Implemented_
+| `disk_usage` | | x _Implemented_
 | `load_average` | | x _Implemented_
-| `memory` | | x _Implemented as println!_
+| `mem_stats` | | x _Implemented_
 | `mounts` | |
 | `socket_stats` | |
 | `uptime` | Returns system uptime in seconds | x _Implemented_

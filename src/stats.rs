@@ -1,60 +1,56 @@
 use std::result::Result;
 
-use probes::*;
-use serde::Serialize;
+use probes::{cpu, disk_usage, load, memory};
 use snafu::ResultExt;
 
 use crate::error::*;
-
-#[derive(Debug, Serialize)]
-pub struct CpuStat {
-    user: u64,
-    system: u64,
-    idle: u64,
-    nice: u64,
-}
-
-#[derive(Debug, Serialize)]
-pub struct CpuStatPercentages {
-    user: f32,
-    system: f32,
-    idle: f32,
-    nice: f32,
-}
-
-#[derive(Debug, Serialize)]
-pub struct LoadAverage {
-    one: f32,
-    five: f32,
-    fifteen: f32,
-}
+use crate::structs::{CpuStat, CpuStatPercentages, DiskUsage, LoadAverage, MemStat};
 
 pub fn cpu_stats() -> Result<String, StatError> {
     let cpu_stats = cpu::proc::read().context(ReadCpuStat)?;
     let s = cpu_stats.stat;
-    let stats = CpuStat {
+    let cpu = CpuStat {
         user: s.user,
         system: s.system,
         nice: s.nice,
         idle: s.idle,
     };
-    let json_stats = serde_json::to_string(&stats).context(SerdeSerialize)?;
+    let json_cpu = serde_json::to_string(&cpu).context(SerdeSerialize)?;
 
-    Ok(json_stats)
+    Ok(json_cpu)
 }
 
 pub fn cpu_stats_percent() -> Result<String, StatError> {
     let cpu_stats = cpu::proc::read().context(ReadCpuStat)?;
     let s = cpu_stats.stat.in_percentages();
-    let stats = CpuStatPercentages {
+    let cpu = CpuStatPercentages {
         user: s.user,
         system: s.system,
         nice: s.nice,
         idle: s.idle,
     };
-    let json_stats = serde_json::to_string(&stats).context(SerdeSerialize)?;
+    let json_cpu = serde_json::to_string(&cpu).context(SerdeSerialize)?;
 
-    Ok(json_stats)
+    Ok(json_cpu)
+}
+
+pub fn disk_usage() -> Result<String, StatError> {
+    let disks = disk_usage::read().context(ReadDiskUsage)?;
+    let mut disk_usages = Vec::new();
+    for d in disks {
+        let disk = DiskUsage {
+            filesystem: d.filesystem,
+            one_k_blocks: d.one_k_blocks,
+            one_k_blocks_used: d.one_k_blocks_used,
+            one_k_blocks_free: d.one_k_blocks_free,
+            used_percentage: d.used_percentage,
+            mountpoint: d.mountpoint,
+        };
+        disk_usages.push(disk);
+    }
+    let json_disks = serde_json::to_string(&disk_usages).context(SerdeSerialize)?;
+
+    Ok(json_disks)
 }
 
 pub fn load_average() -> Result<String, StatError> {
@@ -67,4 +63,16 @@ pub fn load_average() -> Result<String, StatError> {
     let json_load_avg = serde_json::to_string(&load_avg).context(SerdeSerialize)?;
 
     Ok(json_load_avg)
+}
+
+pub fn mem_stats() -> Result<String, StatError> {
+    let m = memory::read().context(ReadMemStat)?;
+    let mem = MemStat {
+        total: m.total(),
+        free: m.free(),
+        used: m.used(),
+    };
+    let json_mem = serde_json::to_string(&mem).context(SerdeSerialize)?;
+
+    Ok(json_mem)
 }

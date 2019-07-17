@@ -3,16 +3,16 @@ extern crate log;
 
 mod error;
 mod stats;
+mod structs;
 
 use std::{env, result::Result};
 
-use jsonrpc_core::{types::error::Error, IoHandler, Value};
+use jsonrpc_core::{IoHandler, Value};
 use jsonrpc_http_server::{AccessControlAllowOrigin, DomainsValidation, ServerBuilder};
 #[allow(unused_imports)]
 use jsonrpc_test as test;
-use probes::*;
 
-use crate::error::{BoxError, StatError};
+use crate::error::BoxError;
 
 pub fn run() -> Result<(), BoxError> {
     info!("Starting up.");
@@ -20,42 +20,39 @@ pub fn run() -> Result<(), BoxError> {
     info!("Creating JSON-RPC I/O handler.");
     let mut io = IoHandler::default();
 
-    // current cpu stats
     io.add_method("cpu_stats", move |_| {
         info!("Fetching CPU statistics.");
-        match stats::cpu_stats() {
-            Ok(stats) => Ok(Value::String(stats)),
-            Err(_) => Err(Error::from(StatError::GetCpuStat)),
-        }
+        let stats = stats::cpu_stats()?;
+
+        Ok(Value::String(stats))
     });
 
-    // current cpu stats as percentages
     io.add_method("cpu_stats_percent", move |_| {
         info!("Fetching CPU statistics as percentages.");
-        match stats::cpu_stats_percent() {
-            Ok(stats) => Ok(Value::String(stats)),
-            Err(_) => Err(Error::from(StatError::GetCpuStat)),
-        }
+        let stats = stats::cpu_stats_percent()?;
+
+        Ok(Value::String(stats))
     });
 
-    // disk usage load stats
     io.add_method("disk_usage", move |_| {
-        info!("Fetching CPU temperature.");
-        let disk_usages = disk_usage::read();
-        if let Ok(disk) = disk_usages {
-            println!("{:?}", disk);
-        }
+        info!("Fetching disk usage statistics.");
+        let disks = stats::disk_usage()?;
 
-        Ok(Value::String("success".to_string()))
+        Ok(Value::String(disks))
     });
 
-    // current load average of the system (one, five, fifteen)
     io.add_method("load_average", move |_| {
         info!("Fetching system load average statistics.");
-        match stats::load_average() {
-            Ok(avgs) => Ok(Value::String(avgs)),
-            Err(_) => Err(Error::from(StatError::GetLoadAvg)),
-        }
+        let avg = stats::load_average()?;
+
+        Ok(Value::String(avg))
+    });
+
+    io.add_method("mem_stats", move |_| {
+        info!("Fetching current memory statistics.");
+        let mem = stats::mem_stats()?;
+
+        Ok(Value::String(mem))
     });
 
     let http_server = env::var("PEACH_OLED_STATS").unwrap_or_else(|_| "127.0.0.1:5113".to_string());
