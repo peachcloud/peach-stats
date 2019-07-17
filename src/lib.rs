@@ -1,104 +1,50 @@
 #[macro_use]
 extern crate log;
-extern crate systemstat;
 
-use std::{
-    env, process,
-    result::Result,
-    sync::{Arc, Mutex},
-    thread,
-    time::Duration,
-};
+mod error;
+mod stats;
 
-use jsonrpc_core::{types::error::Error, IoHandler, Params, Value};
+use std::{env, result::Result};
+
+use jsonrpc_core::{types::error::Error, IoHandler, Value};
 use jsonrpc_http_server::{AccessControlAllowOrigin, DomainsValidation, ServerBuilder};
 #[allow(unused_imports)]
 use jsonrpc_test as test;
-use serde::Deserialize;
-use snafu::{ensure, ResultExt};
-use systemstat::{Platform, System};
+use probes::*;
 
-//use crate::error::{I2CError, InvalidCoordinate, InvalidString, OledError};
-/*
-//define the Graphic struct for receiving draw commands
-#[derive(Debug, Deserialize)]
-pub struct Graphic {
-    bytes: Vec<u8>,
-    width: u32,
-    height: u32,
-    x_coord: i32,
-    y_coord: i32,
-}
-*/
+use crate::error::{BoxError, StatError};
 
-pub fn run() -> Result<(), Error> {
+pub fn run() -> Result<(), BoxError> {
     info!("Starting up.");
-
-    debug!("Creating handle for system statistics platform.");
-    let sys = Arc::new(Mutex::new(System::new()));
-    let sys_clone = Arc::clone(&sys);
 
     info!("Creating JSON-RPC I/O handler.");
     let mut io = IoHandler::default();
 
-    // Returns the current CPU temperature in degrees Celsius.
-    io.add_method("cpu_temp", move |_| {
+    // current cpu stats
+    io.add_method("cpu_stats", move |_| {
+        info!("Fetching CPU statistics.");
+        match stats::cpu_stats() {
+            Ok(stats) => Ok(Value::String(stats)),
+            Err(_) => Err(Error::from(StatError::GetCpuStat)),
+        }
+    });
+
+    // current cpu stats as percentages
+    io.add_method("cpu_stats_percent", move |_| {
+        info!("Fetching CPU statistics as percentages.");
+        match stats::cpu_stats_percent() {
+            Ok(stats) => Ok(Value::String(stats)),
+            Err(_) => Err(Error::from(StatError::GetCpuStat)),
+        }
+    });
+
+    // disk usage load stats
+    io.add_method("disk_usage", move |_| {
         info!("Fetching CPU temperature.");
-        let sys = sys_clone.lock().unwrap();
-        let temp = match sys.cpu_temp() {
-            Ok(temp_celcius) => temp_celcius.to_string(),
-            // returns io error: struct std::io::Error
-            Err(e) => format!("Error: {:?}", e),
-        };
-
-        Ok(Value::String(temp))
-    });
-
-    let sys_clone = Arc::clone(&sys);
-
-    // ERR: gives wrong answer (ie. "off" when charging)
-    // Returns whether AC power is plugged in.
-    io.add_method("on_ac_power", move |_| {
-        info!("Fetching AC power status.");
-        let sys = sys_clone.lock().unwrap();
-        let ac_on = match sys.on_ac_power() {
-            Ok(ac) => {
-                if ac {
-                    "on".to_string()
-                } else {
-                    "off".to_string()
-                }
-            }
-            Err(e) => format!("Error: {:?}", e),
-        };
-
-        Ok(Value::String(ac_on))
-    });
-
-    let sys_clone = Arc::clone(&sys);
-
-    // Returns the system uptime.
-    io.add_method("uptime", move |_| {
-        info!("Fetching system uptime.");
-        let sys = sys_clone.lock().unwrap();
-        let uptime = match sys.uptime() {
-            Ok(time) => format!("{:?}", time),
-            Err(e) => format!("Error: {:?}", e),
-        };
-
-        Ok(Value::String(uptime))
-    });
-
-    let sys_clone = Arc::clone(&sys);
-
-    // Returns a memory information object.
-    io.add_method("memory", move |_| {
-        info!("Fetching memory usage statistics.");
-        let sys = sys_clone.lock().unwrap();
-        match sys.memory() {
-            Ok(m) => println!("{:?}", m),
-            Err(e) => println!("Error: {:?}", e),
-        };
+        let disk_usages = disk_usage::read();
+        if let Ok(disk) = disk_usages {
+            println!("{:?}", disk);
+        }
 
         Ok(Value::String("success".to_string()))
     });
