@@ -5,21 +5,13 @@ JSON-RPC wrapper around the [probes](https://crates.io/crates/probes) and [syste
 ### JSON-API
 
 | Method | Description | Returns |
-| --- | --- |
-| `battery_life` | |
-| `block_device_statistics` | |
-| `boot_time` | |
-| `cpu_load` | |
-| `cpu_temp` | | x _Implemented but fails_
-| `on_ac_power` | | x _Implemented but gives incorrect result_
-| `cpu_stats` | | x _Implemented_
-| `cpu_stats_percent` | | x _Implemented_
-| `disk_usage` | | x _Implemented_
-| `load_average` | | x _Implemented_
-| `mem_stats` | | x _Implemented_
-| `mounts` | |
-| `socket_stats` | |
-| `uptime` | Returns system uptime in seconds | x _Implemented_
+| --- | --- | --- |
+| `cpu_stats` | | |
+| `cpu_stats_percent` | | |
+| `disk_usage` | | |
+| `load_average` | | |
+| `mem_stats` | | |
+| `uptime` | Returns system uptime in seconds & nanoseconds | |
 
 ### Environment
 
