@@ -1,17 +1,17 @@
 # peach-stats
 
-JSON-RPC wrapper around the [probes](https://crates.io/crates/probes) and [systemstat](https://crates.io/crates/systemstat) crates.
+System statistics microservice module for PeachCloud. Provides a JSON-RPC wrapper around the [probes](https://crates.io/crates/probes) and [systemstat](https://crates.io/crates/systemstat) crates.
 
 ### JSON-API
 
 | Method | Description | Returns |
 | --- | --- | --- |
-| `cpu_stats` | | |
-| `cpu_stats_percent` | | |
-| `disk_usage` | | |
-| `load_average` | | |
-| `mem_stats` | | |
-| `uptime` | Returns system uptime in seconds & nanoseconds | |
+| `cpu_stats` | CPU statistics | `user`, `system`, `nice`, `idle` |
+| `cpu_stats_percent` | CPU statistics as percentages | `user`, `system`, `nice`, `idle` |
+| `disk_usage` | Disk usage statistics (array of disks) | `filesystem`, `one_k_blocks`, `one_k_blocks_used`, `one_k_blocks_free`, `used_percentage`, `mountpoint` |
+| `load_average` | Load average statistics | `one`, `five`, `fifteen` |
+| `mem_stats` | Memory statistics | `total`, `free`, `used` |
+| `uptime` | System uptime | `secs`, `nanos` |
 
 ### Environment
 
@@ -44,7 +44,25 @@ Run the binary:
 
 ### Example Usage
 
-WIP.
+**Get CPU Statistics**
+
+With microservice running, open a second terminal window and use `curl` to call server methods:
+
+`curl -X POST -H "Content-Type: application/json" -d '{"jsonrpc": "2.0", "method": "cpu_stats", "id":1 }' 127.0.0.1:5113`
+
+Server responds with:
+
+`{"jsonrpc":"2.0","result":"{\"user\":4661083,\"system\":1240371,\"idle\":326838290,\"nice\":0}","id":1}`
+
+**Get System Uptime**
+
+With microservice running, open a second terminal window and use `curl` to call server methods:
+
+`curl -X POST -H "Content-Type: application/json" -d '{"jsonrpc": "2.0", "method": "uptime", "id":1 }' 127.0.0.1:5113`
+
+Server responds with:
+
+`{"jsonrpc":"2.0","result":"{\"secs\":840968,\"nanos\":0}","id":1}`
 
 ### Licensing
 
