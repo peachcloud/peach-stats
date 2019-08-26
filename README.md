@@ -1,5 +1,7 @@
 # peach-stats
 
+[![Build Status](https://travis-ci.com/peachcloud/peach-stats.svg?branch=master)](https://travis-ci.com/peachcloud/peach-stats)
+
 System statistics microservice module for PeachCloud. Provides a JSON-RPC wrapper around the [probes](https://crates.io/crates/probes) and [systemstat](https://crates.io/crates/systemstat) crates.
 
 ### JSON-API
