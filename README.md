@@ -35,10 +35,10 @@ Clone this repo:
 
 `git clone https://github.com/peachcloud/peach-stats.git`
 
-Move into the repo and compile a build release"
+Move into the repo and compile a release build:
 
-`cd peach-stats`
-`cargo build`
+`cd peach-stats`  
+`cargo build --release`
 
 Run the binary:
 
