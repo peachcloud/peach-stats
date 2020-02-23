@@ -3,6 +3,16 @@ name = "peach-stats"
 version = "0.1.0"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
+description = "System statistics microservice module for PeachCloud. Provides a JSON-RPC wrapper around the probes and systemstat crates. Query system statistics using JSON-RPC over HTTP."
+homepage = "https://opencollective.com/peachcloud"
+repository = "https://github.com/peachcloud/peach-stats"
+readme = "README.md"
+license = "AGPL-3.0-only"
+publish = false
+
+[badges]
+travis-ci = { repository = "peachcloud/peach-stats", branch = "master" }
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 env_logger = "0.6.1"
