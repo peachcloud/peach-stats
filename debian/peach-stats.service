@@ -1,0 +1,12 @@
+[Unit]
+Description=Query system statistics using JSON-RPC over HTTP.
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/bin/peach-stats
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

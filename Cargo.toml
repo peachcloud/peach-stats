@@ -3,12 +3,25 @@ name = "peach-stats"
 version = "0.1.0"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
-description = "System statistics microservice module for PeachCloud. Provides a JSON-RPC wrapper around the probes and systemstat crates. Query system statistics using JSON-RPC over HTTP."
+description = "Query system statistics using JSON-RPC over HTTP. Provides a JSON-RPC wrapper around the probes and systemstat crates."
 homepage = "https://opencollective.com/peachcloud"
 repository = "https://github.com/peachcloud/peach-stats"
 readme = "README.md"
 license = "AGPL-3.0-only"
 publish = false
+
+[package.metadata.deb]
+depends = "$auto"
+extended-description = """\
+peach-stats is a system statistics microservice module for PeachCloud. \
+Query system statistics using JSON-RPC over HTTP. Provides a JSON-RPC \
+wrapper around the probes and systemstat crates."""
+maintainer-scripts="debian"
+assets = [
+    ["target/release/peach-stats", "usr/bin/", "755"],
+    ["debian/peach-stats.service", "/lib/systemd/system/peach-stats.service", "644"],
+    ["README.md", "usr/share/doc/peach-stats/README", "644"],
+]
 
 [badges]
 travis-ci = { repository = "peachcloud/peach-stats", branch = "master" }
