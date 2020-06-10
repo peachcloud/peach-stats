@@ -55,6 +55,8 @@ pub fn run() -> Result<(), BoxError> {
         Ok(Value::String(mem))
     });
 
+    io.add_method("ping", |_| Ok(Value::String("success".to_string())));
+
     io.add_method("uptime", move |_| {
         info!("Fetching system uptime.");
         let uptime = stats::uptime()?;

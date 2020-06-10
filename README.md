@@ -4,7 +4,7 @@
 
 System statistics microservice module for PeachCloud. Provides a JSON-RPC wrapper around the [probes](https://crates.io/crates/probes) and [systemstat](https://crates.io/crates/systemstat) crates.
 
-### JSON-API
+### JSON-RPC API
 
 | Method | Description | Returns |
 | --- | --- | --- |
@@ -13,6 +13,7 @@ System statistics microservice module for PeachCloud. Provides a JSON-RPC wrappe
 | `disk_usage` | Disk usage statistics (array of disks) | `filesystem`, `one_k_blocks`, `one_k_blocks_used`, `one_k_blocks_free`, `used_percentage`, `mountpoint` |
 | `load_average` | Load average statistics | `one`, `five`, `fifteen` |
 | `mem_stats` | Memory statistics | `total`, `free`, `used` |
+| `ping` | Microservice status | `success` if running |
 | `uptime` | System uptime | `secs`, `nanos` |
 
 ### Environment
