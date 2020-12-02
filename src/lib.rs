@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate log;
-
 mod error;
 mod stats;
 mod structs;
@@ -11,6 +8,7 @@ use jsonrpc_core::{IoHandler, Value};
 use jsonrpc_http_server::{AccessControlAllowOrigin, DomainsValidation, ServerBuilder};
 #[allow(unused_imports)]
 use jsonrpc_test as test;
+use log::info;
 
 use crate::error::BoxError;
 
