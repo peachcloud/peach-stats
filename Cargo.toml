@@ -1,6 +1,6 @@
 [package]
 name = "peach-stats"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 description = "Query system statistics using JSON-RPC over HTTP. Provides a JSON-RPC wrapper around the probes and systemstat crates."
@@ -17,9 +17,9 @@ peach-stats is a system statistics microservice module for PeachCloud. \
 Query system statistics using JSON-RPC over HTTP. Provides a JSON-RPC \
 wrapper around the probes and systemstat crates."""
 maintainer-scripts="debian"
+systemd-units = { unit-name = "peach-stats" }
 assets = [
     ["target/release/peach-stats", "usr/bin/", "755"],
-    ["debian/peach-stats.service", "/lib/systemd/system/peach-stats.service", "644"],
     ["README.md", "usr/share/doc/peach-stats/README", "644"],
 ]
 
