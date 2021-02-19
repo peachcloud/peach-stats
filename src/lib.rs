@@ -86,10 +86,6 @@ pub fn run() -> Result<(), BoxError> {
 mod tests {
     use super::*;
 
-    use jsonrpc_core::ErrorCode;
-    use std::io::Error as IoError;
-    use std::io::ErrorKind;
-
     // test to ensure correct success response
     #[test]
     fn rpc_success() {

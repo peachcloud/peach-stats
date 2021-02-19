@@ -1,6 +1,6 @@
 # peach-stats
 
-[![Build Status](https://travis-ci.com/peachcloud/peach-stats.svg?branch=master)](https://travis-ci.com/peachcloud/peach-stats) ![Generic badge](https://img.shields.io/badge/version-0.1.2-<COLOR>.svg)
+[![Build Status](https://travis-ci.com/peachcloud/peach-stats.svg?branch=master)](https://travis-ci.com/peachcloud/peach-stats) ![Generic badge](https://img.shields.io/badge/version-0.1.3-<COLOR>.svg)
 
 System statistics microservice module for PeachCloud. Provides a JSON-RPC wrapper around the [probes](https://crates.io/crates/probes) and [systemstat](https://crates.io/crates/systemstat) crates.
 
