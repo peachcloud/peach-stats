@@ -1,6 +1,6 @@
 [package]
 name = "peach-stats"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 description = "Query system statistics using JSON-RPC over HTTP. Provides a JSON-RPC wrapper around the probes and systemstat crates."
